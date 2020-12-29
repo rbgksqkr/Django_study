@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+    <ul><h2>새 글 쓰기</h2></ul>
+    <br>
+<!-- form 데이터를 서버로 보낼 때, 해당 데이터가 도착할 URL action="" 으로 명시-->
+    <form action="{% url 'community:write' %}" method="post">
+        {{ form.as_p }}
+        <!-- form 태그에서 발생하는 보안문제 방지를 위해 사용된 csrf_token 를 같이 넘겨줌(django 내장)-->
+        {% csrf_token %}
+        <button type="submit" class="btn btn-primary">작성 완료</button>
+    </form>
+
+{% endblock %}

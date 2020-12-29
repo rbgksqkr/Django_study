@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block contents %}
+    <ul>
+        <li>제목 | 저자 | 날짜</li>
+        {% for article in articleList %}
+            <li><a href="{% url 'community:view' article.id %}"> {{ article.title }}</a> | {{ article.name }} | {{ article.cdate}}</li>
+        {% endfor %}
+    </ul>
+
+{% endblock %}
