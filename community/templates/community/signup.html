@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+<title>회원가입</title>
+{% endblock title %}
+
 {% block contents %}
     <h2>회원가입</h2>
 <form method="POST" action="{% url 'community:signup' %}">

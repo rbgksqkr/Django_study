@@ -9,13 +9,14 @@ urlpatterns = [
     path('', views.home, name='home'),
 
     # community/write/
-    path('write/', views.write, name='write'),
+    # path('write/', views.write, name='write'),
+    path('write/', views.PostCreateView.as_view(), name='post_new'),
 
     # community/list/
     path('list/', views.list, name='list'),
 
     # community/<num>/
-    url('view/(?P<article_id>[0-9]+)/$', views.view, name='view'),
+    path('detail/<int:article_id>/', views.detail, name='detail'),
 
     # community/login/
     path('login/', views.login, name='login'),
@@ -25,4 +26,8 @@ urlpatterns = [
 
     # community/logout/
     path('logout/', views.logout, name='logout'),
+
+    path('index/', views.index, name='index'),
+
+
 ]

@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+<title>로그인</title>
+{% endblock title %}
+
 {% block contents %}
     <h2>로그인</h2>
 <form method="POST" action="{% url 'community:login' %}">

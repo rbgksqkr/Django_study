@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>세부 정보</title>
+{% endblock title %}
+{% block contents %}
+
+
+<ul>
+    <li>제 목 : {{ article.title }}</li>
+    <li>저 자 : {{ article.name }}</li>
+    <li>내 용 : {{ article.contents }}</li>
+</ul>
+
+
+<!-- Comments Form -->
+<div class="card my-4">
+    <h5 class="card-header" style="width: 40%">Leave a Comment:</h5>
+    <div class="card-body">
+        <form method="POST">
+            {% csrf_token %}
+            <div class="form-group">{{ comment_form }}</div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+
+{% for comment in comments %}
+
+<!-- Single Comment -->
+<div class="media mb-4">
+    <img class="d-flex mr-3 rounded-circle" src="http://placehold.it/50x50" alt="">
+    <div class="media-body">
+        <h5 class="mt-0">{{ comment.comment_user }}</h5>
+        <h5 class="mt-0">{{ comment.comment_date }}</h5>
+        <h5 class="mt-0">{{ comment.comment_thumbnail_url }}</h5>
+        <h5 class="mt-0">{{ comment.comment_textfield }}</h5>
+    </div>
+</div>
+
+{% endfor %}
+
+
+{% endblock %}

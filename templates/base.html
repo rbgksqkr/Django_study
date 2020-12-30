@@ -9,7 +9,8 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>title</title>
+{% block title %}
+{% endblock title %}
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light text-white fw-bold">
@@ -25,10 +26,13 @@
           <a class="nav-link active" aria-current="page" href="{% url 'community:home' %}">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{% url 'community:write' %}">글쓰기</a>
+          <a class="nav-link active" aria-current="page" href="{% url 'community:post_new' %}">글쓰기</a>
         </li>
         <li class="nav-item">
           <a class="nav-link active" aria-current="page" href="{% url 'community:list' %}">최신 글</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="{% url 'community:index' %}">최신 글 리스트 제작중</a>
         </li>
           {% if user.is_authenticated %}
          <li class="nav-item">
