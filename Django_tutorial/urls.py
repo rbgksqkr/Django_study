@@ -19,7 +19,7 @@ from django.urls import path, include
 from community import views
 
 urlpatterns = [
-    path('', views.home),
+    path('', views.cover, name='cover'),
     path('admin/', admin.site.urls),
     path('community/', include('community.urls')),
     path('oauth/', views.oauth, name='oauth'),

@@ -6,14 +6,14 @@ app_name = 'community'
 
 urlpatterns = [
     # community/
-    path('', views.home, name='home'),
+    path('', views.main, name='main'),
 
     # community/write/
     # path('write/', views.write, name='write'),
     path('write/', views.PostCreateView.as_view(), name='post_new'),
 
     # community/list/
-    path('list/', views.list, name='list'),
+    path('list/', views.postList, name='postList'),
 
     # community/<num>/
     path('detail/<int:article_id>/', views.detail, name='detail'),
@@ -26,8 +26,6 @@ urlpatterns = [
 
     # community/logout/
     path('logout/', views.logout, name='logout'),
-
-    path('index/', views.index, name='index'),
 
 
 ]

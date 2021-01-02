@@ -1,4 +1,3 @@
-from ckeditor_uploader.widgets import CKEditorUploadingWidget
 from django.forms import ModelForm
 from .models import Article, Comment
 from django import forms
@@ -19,16 +18,15 @@ class ArticleForm(ModelForm):
             'contents': forms.Textarea(
                 attrs={'class': 'form-control', 'style': 'width: 30%', 'placeholder': '내용을 입력하세요.'}
             ),
-            'body': forms.CharField(widget=CKEditorUploadingWidget()),
         }
 
 
 class CommentForm(ModelForm):
     class Meta:
         model = Comment
-        fields = ['comment_textfield']
+        fields = ['article', 'comment_user', 'comment_textfield']
         widgets = {
             'comment_textfield': forms.Textarea(
-                attrs={'class': 'form-control', 'style': 'width: 40%', 'row': 3, 'placeholder': '내용을 입력하세요.'}
+                attrs={'class': 'form-control', 'rows': 3, 'placeholder': '내용을 입력하세요.'}
             ),
         }

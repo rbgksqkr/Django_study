@@ -8,13 +8,13 @@ import requests
 import json
 
 
-def home(request):
-    return render(request, "community/home.html")
+def cover(request):
+    return render(request, "community/cover.html")
 
 
-def index(request):
-    articleList = Article.objects.all()  # models.py 의 Article 에서 만든 모든 DB column 을 가져온다
-    return render(request, "community/index.html", {'articleList': articleList})
+def main(request):
+    articles = Article.objects.all()
+    return render(request, "community/main.html", {'articles': articles})
 
 
 # 글 작성하는 generic view
@@ -24,9 +24,9 @@ class PostCreateView(CreateView):
     form_class = ArticleForm
 
 
-def list(request):
+def postList(request):
     articleList = Article.objects.all()  # models.py 의 Article 에서 만든 모든 DB column 을 가져온다
-    return render(request, "community/list.html", {'articleList': articleList})
+    return render(request, "community/post_list.html", {'articleList': articleList})
 
 
 def detail(request, article_id):
@@ -36,7 +36,6 @@ def detail(request, article_id):
 
     if request.method == 'POST':
         comment_form = CommentForm(request.POST)
-
         if comment_form.is_valid():
             content = comment_form.cleaned_data['comment_textfield']  # clean_data[] 형태로 실제로 입력된 데이터에 해당되는 것을 받아옴
 
@@ -48,27 +47,28 @@ def detail(request, article_id):
             # 3. access_token 을 이용해 실제 카카오계정에서 사용중인 닉네임, 프로필사진을 가져옴.
             # 4. access_token 을 이용해 카카오톡 나에게 보내기 기능 사용.
 
-            login_request_uri = 'https://kauth.kakao.com/oauth/authorize?'
+            with open("community\\REST API KEY.txt", "r", encoding="utf8") as f:
+                client_id = f.read()    # REST API 키. 자기만 알아야함. 개인정보 유출 위험.
+                redirect_uri = 'http://127.0.0.1:8000/oauth'
 
-            client_id = 'REST API KEY'  # REST API 키. kakao developer 에서 알 수 있음. 자기만 알기.
-            redirect_uri = 'http://127.0.0.1:8000/oauth'
+                login_request_uri = 'https://kauth.kakao.com/oauth/authorize?'
+                login_request_uri += 'client_id=' + client_id
+                login_request_uri += '&redirect_uri=' + redirect_uri
+                login_request_uri += '&response_type=code'
+                login_request_uri += '&response_type=code&scope=talk_message'  # 동적동의할 때 필요
 
-            login_request_uri += 'client_id=' + client_id
-            login_request_uri += '&redirect_uri=' + redirect_uri
-            login_request_uri += '&response_type=code'
-            login_request_uri += '&response_type=code&scope=talk_message'  # 동적동의에 필요
+                # 세션변수 'client_id', 'redirect_uri' 에 담아서 oauth()로 보내기
+                request.session['client_id'] = client_id
+                request.session['redirect_uri'] = redirect_uri
 
-            # 세션변수 'client_id', 'redirect_uri' 에 담아서 oauth()로 보내기
-            request.session['client_id'] = client_id
-            request.session['redirect_uri'] = redirect_uri
+                comment_form.save()
 
-            return redirect(login_request_uri)
+                return redirect(login_request_uri)
         else:
             return redirect('/community/list')
 
     else:
         comment_form = CommentForm()
-
         context = {
             'article': article,
             'comments': comments,
@@ -92,27 +92,27 @@ def oauth(request):
     access_token_request_uri += '&redirect_uri=' + redirect_uri
     access_token_request_uri += '&code=' + code
 
-    # print(access_token_request_uri)
-
     # JSON 데이터 파싱
     access_token_request_uri_data = requests.get(access_token_request_uri)
-    json_data = access_token_request_uri_data.json() # json() 함수를 통해 딕셔너리 형태로 변환
+    json_data = access_token_request_uri_data.json()  # json() 함수를 통해 딕셔너리 형태로 변환
     access_token = json_data['access_token']  # 'access_token' key 의 value 를 가져온다
-    print("access_token :", access_token)
+
+    # print("access_token :", access_token)
 
     # access_token 을 이용해 실제 카카오계정에서 사용중인 닉네임, 프로필사진을 가져옴.
     user_profile_info_uri = "https://kapi.kakao.com/v1/api/talk/profile?access_token="
     user_profile_info_uri += str(access_token)
 
+    # 서비스 배포를 한다면 user_json_data 를 이용해 사진과 닉네임을 comment 에 달리게 만들 수 있음.
     user_profile_info_uri_data = requests.get(user_profile_info_uri)
     user_json_data = user_profile_info_uri_data.json()
     nickName = user_json_data['nickName']
     profileImageURL = user_json_data['profileImageURL']
     thumbnailURL = user_json_data['thumbnailURL']
 
-    # print("nickName = " + str(nickName))
-    # print("profileImageURL = " + str(profileImageURL))
-    # print("thumbnailURL = " + str(thumbnailURL))
+    # print("nickname :", nickName)
+    # print("profile :", profileImageURL)
+    # print("thumbnail :", thumbnailURL)
 
     # 카카오톡 나에게 보내기 예시 데이터
     template_dict_data = str({
@@ -171,9 +171,6 @@ def oauth(request):
     # requests.request() 를 이용해 카카오톡 나에게 보내기
     requests.request(method="POST", url=kakao_to_me_uri, data=template_json_data, headers=headers)
 
-    # response = requests.request(method="POST", url=kakao_to_me_uri, data=template_json_data, headers=headers)
-    # print(response.json())  # {'result_code': 0} : 성공
-
     return redirect('/community')
 
 
@@ -227,14 +224,12 @@ def logout(request):
     # logout으로 GET 요청이 들어왔을 때, 로그인 화면을 띄워준다.
     return render(request, 'community/login.html')
 
-
-
 # def write(request):
 #     if request.method == 'POST':  # POST 형식 요청일 때
-#         form = Form(request.POST)
+#         form = ArticleForm(request.POST)
 #         if form.is_valid():  # 유효한 데이터라면
 #             form.save()  # form 을 그대로 DB에 저장
 #             return redirect('/community/list')
 #     else:
-#         form = Form()
+#         form = ArticleForm()
 #     return render(request, 'community/write.html', {'form': form})  # {'"write.html"에서 사용할 변수이름': 넘겨줄 변수이름}

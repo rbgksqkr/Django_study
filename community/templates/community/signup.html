@@ -5,18 +5,21 @@
 {% endblock title %}
 
 {% block contents %}
-    <h2>회원가입</h2>
+    <br><br><br>
 <form method="POST" action="{% url 'community:signup' %}">
     {% csrf_token %}
-    <p>username</p>
-    <input type="text" name="username">
-    <br>
-    <p>password</p>
-    <input type="password" name="password">
-    <br>
-    <p>confirm</p>
-    <input type="password" name="confirm">
-    <br>
-    <input type="submit" value="회원가입">
+    <ul>
+        <h2 class="fw-bolder">[회원가입]</h2>
+        <h5>username</h5>
+        <input type="text" name="username">
+        <br>
+        <h5>password</h5>
+        <input type="password" name="password">
+        <br>
+        <p>confirm</p>
+        <input type="password" name="confirm">
+        <br>
+        <input type="submit" value="회원가입">
+    </ul>
 </form>
 {% endblock %}

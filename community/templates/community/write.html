@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
+<head>
+    {% block title %}
+    <title>새 글 작성</title>
+    {% endblock %}
+</head>
 
-{% block title %}
-<title>새 글 쓰기</title>
-{% endblock title %}
+
 
 {% block contents %}
-    <ul><h2>새 글 쓰기</h2></ul>
-    <br>
+    <br><br><br>
+    <ul><h2 class="fw-bolder">[새 글 작성]</h2></ul>
 <!-- form 데이터를 서버로 보낼 때, 해당 데이터가 도착할 URL action="" 으로 명시-->
     <form action="{% url 'community:post_new' %}" method="post">
         {{ form.as_p }}
@@ -14,5 +17,4 @@
         {% csrf_token %}
         <button type="submit" class="btn btn-primary">작성 완료</button>
     </form>
-
 {% endblock %}

@@ -1,20 +1,27 @@
 {% extends 'base.html' %}
+<head>
+    {% block title %}
+        <title>로그인</title>
+    {% endblock %}
+</head>
 
-{% block title %}
-<title>로그인</title>
-{% endblock title %}
 
 {% block contents %}
-    <h2>로그인</h2>
-<form method="POST" action="{% url 'community:login' %}">
-    {% csrf_token %}
-    <p>username</p>
-    <input type="text" name="username">
-    <br>
-    <p>password</p>
-    <input type="password" name="password">
-    <br>
-    <input type="submit" value="로그인">
-    <input type="button" value="회원가입" onclick="location.href='signup'">
-</form>
+    <br><br><br>
+    <form method="POST" action="{% url 'community:login' %}">
+        {% csrf_token %}
+        <ul>
+            <h2 class="fw-bolder">[로그인]</h2>
+            <h5>username</h5>
+            <input type="text" name="username">
+            <br>
+            <h5>password</h5>
+            <input type="password" name="password">
+            <br>
+            <input type="submit" value="로그인">
+            <input type="button" value="회원가입" onclick="location.href='signup'">
+        </ul>
+
+    </form>
 {% endblock %}
+
